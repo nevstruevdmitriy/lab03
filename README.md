@@ -35,21 +35,61 @@ $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab03.git
 ```ShellSession
 $ g++ -std=c++11 -I./include -c sources/print.cpp
 $ ls print.o
+print.0
 $ nm print.o | grep print
+
+0000000000000095 t _GLOBAL__sub_I__Z5printRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERSo
+0000000000000000 T _Z5printRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERSo
+0000000000000026 T _Z5printRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERSt14basic_ofstreamIcS2_E
+
 $ ar rvs print.a print.o
+
+ar: creating print.a
+a - print.o
+
 $ file print.a
+
+print.a: current ar archive
+
 $ g++ -std=c++11 -I./include -c examples/example1.cpp
 $ ls example1.o
+example1.o
 $ g++ example1.o print.a -o example1
 $ ./example1 && echo
+hello
 ```
 
 ```ShellSession
 $ g++ -std=c++11 -I./include -c examples/example2.cpp
 $ nm example2.o
+                 U __cxa_atexit
+                 U __dso_handle
+0000000000000000 V DW.ref.__gxx_personality_v0
+                 U _GLOBAL_OFFSET_TABLE_
+000000000000016f t _GLOBAL__sub_I_main
+                 U __gxx_personality_v0
+0000000000000000 T main
+                 U __stack_chk_fail
+                 U _Unwind_Resume
+0000000000000126 t _Z41__static_initialization_and_destruction_0ii
+                 U _Z5printRKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERSt14basic_ofstreamIcS2_E
+                 U _ZNSaIcEC1Ev
+                 U _ZNSaIcED1Ev
+                 U _ZNSt14basic_ofstreamIcSt11char_traitsIcEEC1EPKcSt13_Ios_Openmode
+                 U _ZNSt14basic_ofstreamIcSt11char_traitsIcEED1Ev
+                 U _ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1EPKcRKS3_
+                 U _ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev
+                 U _ZNSt8ios_base4InitC1Ev
+                 U _ZNSt8ios_base4InitD1Ev
+0000000000000000 r _ZStL19piecewise_construct
+0000000000000000 b _ZStL8__ioinit
+0000000000000000 W _ZStorSt13_Ios_OpenmodeS_
+
+
 $ g++ example2.o print.a -o example2
 $ ./example2
 $ cat log.txt && echo
+hello
 ```
 
 ```ShellSession
@@ -87,7 +127,12 @@ EOF
 
 ```ShellSession
 $ cmake -H. -B_build
+-- собралось
 $ cmake --build _build
+-- скомпилировалось
+[ 50%] Building CXX object CMakeFiles/print.dir/sources/print.cpp.o
+[100%] Linking CXX static library libprint.a
+[100%] Built target print
 ```
 
 ```ShellSession
@@ -108,13 +153,24 @@ EOF
 
 ```ShellSession
 $ cmake --build _build
+...
+[ 83%] Building CXX object CMakeFiles/example1.dir/examples/example1.cpp.o
+[100%] Linking CXX executable example1
+[100%] Built target example1
 $ cmake --build _build --target print
+[100%] Built target print
 $ cmake --build _build --target example1
+[ 50%] Built target print
+[100%] Built target example1
 $ cmake --build _build --target example2
+[ 50%] Built target print
+[100%] Built target example2
+
 ```
 
 ```ShellSession
 $ ls -la _build/libprint.a
+-rw-r--r-- 1 dimka dimka 3134 мар 26 12:58 _build/libprint.a
 $ _build/example1 && echo
 hello
 $ _build/example2
@@ -132,8 +188,33 @@ $ rm -rf tmp
 ```ShellSession
 $ cat CMakeLists.txt
 $ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/dimka/Desktop/птз8с/ak/hw/nevstruev.dmitriy/workspace/projects/lab03/_build
+
 $ cmake --build _build --target install
+
+[100%] Built target print
+Install the project...
+-- Install configuration: ""
+-- Installing: /home/dimka/Desktop/птз8с/ak/hw/nevstruev.dmitriy/workspace/projects/lab03/_install/lib/libprint.a
+-- Installing: /home/dimka/Desktop/птз8с/ak/hw/nevstruev.dmitriy/workspace/projects/lab03/_install/include
+-- Installing: /home/dimka/Desktop/птз8с/ak/hw/nevstruev.dmitriy/workspace/projects/lab03/_install/include/print.hpp
+-- Installing: /home/dimka/Desktop/птз8с/ak/hw/nevstruev.dmitriy/workspace/projects/lab03/_install/cmake/print-config.cmake
+-- Installing: /home/dimka/Desktop/птз8с/ak/hw/nevstruev.dmitriy/workspace/projects/lab03/_install/cmake/print-config-noconfig.cmake
+
+
 $ tree _install
+_install
+├── cmake
+│   ├── print-config.cmake
+│   └── print-config-noconfig.cmake
+├── include
+│   └── print.hpp
+└── lib
+    └── libprint.a
+
+
 ```
 
 ```ShellSession
