@@ -15,16 +15,19 @@ $ open https://cmake.org/
 
 ## Tutorial
 
+Переменные
 ```ShellSession
 $ export GITHUB_USERNAME=<имя_пользователя>
 ```
 
+На рабочую папку
 ```ShellSession
 $ cd ${GITHUB_USERNAME}/workspace
 $ pushd .
 $ source scripts/activate
 ```
 
+Создали реп для текушей лабы
 ```ShellSession
 $ git clone https://github.com/${GITHUB_USERNAME}/lab02.git projects/lab03
 $ cd projects/lab03
@@ -32,6 +35,7 @@ $ git remote remove origin
 $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab03.git
 ```
 
+скомпилировали в ассемблер, потом в машинный и проверили что всё нормально
 ```ShellSession
 $ g++ -std=c++11 -I./include -c sources/print.cpp
 $ ls print.o
@@ -59,6 +63,7 @@ $ ./example1 && echo
 hello
 ```
 
+то же самое со вторым примером
 ```ShellSession
 $ g++ -std=c++11 -I./include -c examples/example2.cpp
 $ nm example2.o
@@ -92,6 +97,7 @@ $ cat log.txt && echo
 hello
 ```
 
+удалили все артефакты
 ```ShellSession
 $ rm -rf example1.o example2.o print.o
 $ rm -rf print.a
@@ -99,13 +105,15 @@ $ rm -rf example1 example2
 $ rm -rf log.txt
 ```
 
+добавили в смаке минимальную версию
 ```ShellSession
 $ cat > CMakeLists.txt <<EOF
-cmake_minimum_required(VERSION 3.4)
+cmake_minimumrequired(VERSION 3.4)
 project(print)
 EOF
 ```
 
+добавили в смаке стадарт компилятора
 ```ShellSession
 $ cat >> CMakeLists.txt <<EOF
 set(CMAKE_CXX_STANDARD 11)
@@ -113,18 +121,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 EOF
 ```
 
+Статическую библиотеку
 ```ShellSession
 $ cat >> CMakeLists.txt <<EOF
 add_library(print STATIC \${CMAKE_CURRENT_SOURCE_DIR}/sources/print.cpp)
 EOF
 ```
 
+сказали откуда брать хедоры
 ```ShellSession
 $ cat >> CMakeLists.txt <<EOF
 include_directories(\${CMAKE_CURRENT_SOURCE_DIR}/include)
 EOF
 ```
 
+собираем и компилируем проэкт
 ```ShellSession
 $ cmake -H. -B_build
 -- собралось
@@ -135,6 +146,7 @@ $ cmake --build _build
 [100%] Built target print
 ```
 
+добавляем примеры
 ```ShellSession
 $ cat >> CMakeLists.txt <<EOF
 
@@ -143,6 +155,7 @@ add_executable(example2 \${CMAKE_CURRENT_SOURCE_DIR}/examples/example2.cpp)
 EOF
 ```
 
+пробрасываем зависимости
 ```ShellSession
 $ cat >> CMakeLists.txt <<EOF
 
@@ -151,6 +164,7 @@ target_link_libraries(example2 print)
 EOF
 ```
 
+компилируем
 ```ShellSession
 $ cmake --build _build
 ...
@@ -168,6 +182,7 @@ $ cmake --build _build --target example2
 
 ```
 
+сомтрим на результат компиляции
 ```ShellSession
 $ ls -la _build/libprint.a
 -rw-r--r-- 1 dimka dimka 3134 мар 26 12:58 _build/libprint.a
@@ -179,12 +194,14 @@ hello
 $ rm -rf log.txt
 ```
 
+проверили что всё работает если склонировать реп с нуля, наверное
 ```ShellSession
 $ git clone https://github.com/tp-labs/lab03 tmp
 $ mv -f tmp/CMakeLists.txt .
 $ rm -rf tmp
 ```
 
+компилируем и устанавливаем
 ```ShellSession
 $ cat CMakeLists.txt
 $ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
@@ -204,6 +221,7 @@ Install the project...
 -- Installing: /home/dimka/Desktop/птз8с/ak/hw/nevstruev.dmitriy/workspace/projects/lab03/_install/cmake/print-config-noconfig.cmake
 
 
+смотрим на папку _install и видим то что ожидалось
 $ tree _install
 _install
 ├── cmake
@@ -217,6 +235,7 @@ _install
 
 ```
 
+делаем комит
 ```ShellSession
 $ git add CMakeLists.txt
 $ git commit -m"added CMakeLists.txt"
